@@ -1,0 +1,573 @@
+/* All styling for the Animator app. The .gleam files only attach class names. */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
+
+/* ── Layout: two columns ─────────────────────────────────────────────────── */
+
+.app {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background: #1a1a2e;
+  color: #d4c5a0;
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+}
+
+/* Left column: the code editor. */
+.code-col {
+  width: 42%;
+  min-width: 320px;
+  max-width: 720px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #3a3a5e;
+  background: #0f0f1e;
+  min-height: 0;
+}
+
+/* The code column stays in the DOM when collapsed, so CodeMirror keeps its
+   state; hiding it gives the right column the full width. */
+.app.code-hidden .code-col { display: none; }
+
+/* A small emoji button (the code pane's collapse toggle, and the playback
+   controls once they exist). */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #2a2a4a;
+  color: #d4c5a0;
+  border: 1px solid #4a4a8a;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 5px 8px;
+}
+.icon-btn:hover { background: #3a3a5e; }
+
+/* ── Code panel (left column) ───────────────────────────────────────────── */
+
+.code-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #1a1a3e;
+  border-bottom: 1px solid #3a3a5e;
+}
+.code-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+.code-title {
+  color: #e8d8b0;
+  font-family: 'Georgia', serif;
+  font-size: 16px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.drawing-select-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.drawing-select-wrap {
+  min-width: 0;
+}
+.delete-drawing-btn {
+  flex-shrink: 0;
+}
+.drawing-select {
+  max-width: 220px;
+  padding: 5px 8px;
+  background: #2a2a4a;
+  color: #e8d8b0;
+  border: 1px solid #4a4a8a;
+  border-radius: 4px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  cursor: pointer;
+}
+.drawing-select:hover,
+.drawing-select:focus {
+  background: #3a3a5e;
+  outline: none;
+  border-color: #6a6aaa;
+}
+
+/* Wrapper holding the editor. */
+.code-editor-wrap {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+}
+/* CodeMirror mount node: grows to fill the panel. */
+.code-editor {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+  background: #0d0d1a;
+}
+.code-editor .cm-editor { width: 100%; height: 100%; }
+
+/* Collapsible reference of the built-ins available to draw functions. */
+.reference {
+  margin: 8px 14px 0;
+  border: 1px solid #3a3a5e;
+  border-radius: 4px;
+  background: #0d0d1a;
+  overflow: hidden;
+}
+.reference-summary {
+  padding: 6px 12px;
+  cursor: pointer;
+  color: #b8a888;
+  font-family: monospace;
+  font-size: 12px;
+  user-select: none;
+}
+.reference-summary:hover { color: #e8d8b0; }
+.reference-body {
+  padding: 4px 12px 10px;
+  border-top: 1px solid #3a3a5e;
+}
+.reference-group { margin-top: 8px; }
+.reference-group-title {
+  color: #8a8aca;
+  font-family: monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+.reference-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  padding: 1px 0;
+}
+.reference-sig {
+  color: #89ddff;
+  font-family: monospace;
+  font-size: 12px;
+  white-space: pre;
+}
+.reference-desc { color: #6a7a8a; font-size: 11px; }
+
+/* ── Animation area (right column) ──────────────────────────────────────── */
+
+.canvas-area {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a14;
+  container-type: size;
+  padding-top: 56px;
+}
+
+/* Playback / shape controls sit above the drawing. */
+.anim-controls {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 18px;
+  padding: 8px 12px;
+  background: rgba(15, 15, 30, 0.88);
+  border: 1px solid #3a3a5e;
+  border-radius: 6px;
+}
+.app.code-hidden .anim-controls { padding-left: 48px; }
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #b8a888;
+  font-size: 12px;
+  user-select: none;
+}
+.control-label {
+  min-width: 42px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8a8aca;
+}
+.control input[type="range"] {
+  width: min(140px, 18vw);
+  accent-color: #c792ea;
+  cursor: pointer;
+}
+.play-btn,
+.reset-btn {
+  margin-left: 4px;
+  white-space: nowrap;
+}
+.control-value {
+  min-width: 2.5em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  color: #e8d8b0;
+}
+
+/* Parse / evaluation errors for user code, above the drawing. */
+.error-banner {
+  position: absolute;
+  top: 64px;
+  left: 12px;
+  right: 12px;
+  z-index: 6;
+  margin: 0 auto;
+  max-width: 42rem;
+  padding: 10px 14px;
+  border: 1px solid #ff5c7a;
+  border-radius: 6px;
+  background: rgba(80, 12, 28, 0.92);
+  color: #ff8fa3;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: 0 0 0 1px rgba(255, 92, 122, 0.25);
+}
+
+/* Button that reveals the code column again when it is hidden. */
+.reveal-code {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+}
+
+/* A centred square that fits the (possibly non-square) animation area. Give your
+   <canvas> this class, so that drawings aren't stretched. */
+.canvas {
+  width: min(100cqw, 100cqh);
+  height: min(100cqw, 100cqh);
+}
+
+/* ── New-drawing name prompt ─────────────────────────────────────────────── */
+
+.name-prompt-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(6, 6, 14, 0.72);
+  backdrop-filter: blur(2px);
+}
+
+.name-prompt {
+  width: min(100%, 360px);
+  padding: 18px 18px 16px;
+  background: #12122a;
+  border: 1px solid #3a3a5e;
+  border-radius: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  color: #d4c5a0;
+}
+
+.name-prompt-title {
+  font-family: Georgia, serif;
+  font-size: 17px;
+  letter-spacing: 0.04em;
+  color: #e8d8b0;
+  margin-bottom: 6px;
+}
+
+.name-prompt-hint {
+  color: #8a8aca;
+  font-size: 12px;
+  margin-bottom: 14px;
+}
+
+.name-prompt-input {
+  width: 100%;
+  padding: 9px 11px;
+  margin-bottom: 14px;
+  background: #0d0d1a;
+  color: #e8d8b0;
+  border: 1px solid #4a4a8a;
+  border-radius: 4px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  outline: none;
+}
+
+.name-prompt-input::placeholder {
+  color: #5a5a7a;
+}
+
+.name-prompt-input:focus {
+  border-color: #6a6aaa;
+  box-shadow: 0 0 0 1px rgba(106, 106, 170, 0.35);
+}
+
+.name-prompt-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.name-prompt-cancel,
+.name-prompt-ok {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.name-prompt-cancel {
+  background: #2a2a4a;
+  color: #b8a888;
+  border: 1px solid #4a4a8a;
+}
+
+.name-prompt-cancel:hover {
+  background: #3a3a5e;
+}
+
+.name-prompt-ok {
+  background: #3a2a5e;
+  color: #e8d8b0;
+  border: 1px solid #6a4a9a;
+}
+
+.name-prompt-ok:hover {
+  background: #4a3a6e;
+}
+
+/* ── Approximator: reference thumb + metrics ─────────────────────────────── */
+
+.reference-thumb {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid #3a3a5e;
+  background: #0d0d1a;
+}
+.reference-thumb-title {
+  color: #8a8aca;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.reference-thumb-img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border: 1px solid #3a3a5e;
+  border-radius: 4px;
+  background: #12122a;
+}
+.approx-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: stretch;
+}
+.approx-card {
+  flex: 1 1 140px;
+  text-align: left;
+  padding: 8px 10px;
+  background: #1a1a3e;
+  color: #b8a888;
+  border: 1px solid #3a3a5e;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1.35;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.approx-card:hover { background: #2a2a4a; }
+.approx-card.active {
+  border-color: #6a4a9a;
+  color: #e8d8b0;
+  box-shadow: 0 0 0 1px rgba(106, 74, 154, 0.35);
+}
+.approx-card-name {
+  font-family: Georgia, serif;
+  font-size: 13px;
+  color: #e8d8b0;
+  margin-bottom: 4px;
+  text-transform: lowercase;
+}
+
+/* ── Approximator studio overlay ─────────────────────────────────────────── */
+
+.studio-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(6, 6, 14, 0.78);
+  backdrop-filter: blur(3px);
+}
+.studio-panel {
+  width: min(920px, 100%);
+  max-height: min(90vh, 720px);
+  overflow: auto;
+  background: #12122a;
+  border: 1px solid #3a3a5e;
+  border-radius: 10px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  color: #d4c5a0;
+  padding: 16px 18px 18px;
+}
+.studio-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.studio-title {
+  font-family: Georgia, serif;
+  font-size: 18px;
+  color: #e8d8b0;
+  letter-spacing: 0.03em;
+}
+.studio-hint {
+  color: #8a8aca;
+  font-size: 12px;
+  margin-bottom: 14px;
+  line-height: 1.45;
+}
+.studio-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+.studio-canvas {
+  width: 360px;
+  height: 360px;
+  max-width: 100%;
+  background: #0d0d1a;
+  border: 1px solid #3a3a5e;
+  border-radius: 6px;
+}
+.studio-side {
+  flex: 1 1 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 220px;
+}
+.studio-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: #8a8aca;
+}
+.studio-input {
+  padding: 8px 10px;
+  background: #0d0d1a;
+  color: #e8d8b0;
+  border: 1px solid #4a4a8a;
+  border-radius: 4px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+}
+.studio-input:focus {
+  outline: none;
+  border-color: #6a6aaa;
+}
+.studio-error {
+  color: #ff8fa3;
+  font-size: 12px;
+}
+.studio-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.studio-mode.active {
+  border-color: #6a4a9a;
+  background: #3a2a5e;
+}
+.studio-slider {
+  width: 100%;
+}
+.studio-slider input[type="range"] {
+  width: 100%;
+}
+.studio-styles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  padding: 8px 10px;
+  background: #0d0d1a;
+  border: 1px solid #3a3a5e;
+  border-radius: 6px;
+}
+.studio-styles-title {
+  width: 100%;
+  color: #8a8aca;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.studio-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #b8a888;
+  font-size: 13px;
+  cursor: pointer;
+}
+.studio-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: auto;
+}
+.studio-ready {
+  background: #3a2a5e;
+  border-color: #6a4a9a;
+  color: #e8d8b0;
+}
+.studio-ready:hover { background: #4a3a6e; }
+
