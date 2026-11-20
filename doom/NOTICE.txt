@@ -1,0 +1,19 @@
+Doom WebAssembly module
+=======================
+
+File: doom.wasm (from jacobenget/doom.wasm v0.1.0)
+
+This binary is a WebAssembly build of the Doom engine (originally released by
+id Software under the GNU GPL v2) via doomgeneric / related open ports.
+
+- Engine license: GNU General Public License v2.0
+  Upstream: https://github.com/jacobenget/doom.wasm
+  Corresponding source for this binary is that project's v0.1.0 release.
+
+- Embedded game data: Doom shareware IWAD (DOOM1.WAD), which id Software
+  historically redistributed freely. This is Episode 1 only.
+  Commercial doom.wad / doom2.wad are NOT included and must not be redistributed
+  without a license from the rights holders.
+
+The animator host (doom_engine.mjs / game_ffi.mjs) is original code for this
+project and loads the WASM module in the browser canvas.
